@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # Custom app on the site
-    'rest-framework',
+    'rest_framework',
     'posts',
-    'auth',
+    'authentication',
     'profiles',
 ]
 
