@@ -8,7 +8,7 @@ from uuid import uuid4
 
 class Post(models.Model):
     '''This model represents a post'''
-    _id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    _id = models.AutoField(primary_key=True, editable=False)
     title = models.CharField(max_length=100, blank=False, null=False)
     image = models.ImageField(upload_to='posts', null=True, blank=True)
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
@@ -27,12 +27,12 @@ class Post(models.Model):
 
 class Comment(models.Model):
     '''This model represents a comment'''
-    _id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    _id = models.AutoField(primary_key=True, editable=False)
     post = models.ForeignKey(Post, on_delete=CASCADE)
     author = models.ForeignKey(User, on_delete=CASCADE)
     likes = models.ManyToManyField(
         User, related_name='comment_likes', blank=True)
-    models.TextField(null=False, blank=True)
+    content = models.TextField(null=False, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
@@ -46,7 +46,7 @@ class Comment(models.Model):
 
 class Reply(models.Model):
     '''This model represents a reply'''
-    _id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    _id = models.AutoField(primary_key=True, editable=False)
     comment = models.ForeignKey(Comment, on_delete=CASCADE)
     author = models.ForeignKey(User, on_delete=CASCADE)
     likes = models.ManyToManyField(

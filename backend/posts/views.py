@@ -57,13 +57,13 @@ def routes(request):
         },
         {
             'Endpoint': '/posts/<str:pk>/like/',
-            'method': 'POST',
+            'method': 'GET',
             'body': None,
             'description': 'Increments the like count of a post by 1'
         },
         {
             'Endpoint': '/posts/<str:pk>/unlike/',
-            'method': 'POST',
+            'method': 'GET',
             'body': None,
             'description': 'Decrements the like count of a post by 1'
         },
@@ -83,7 +83,7 @@ def routes(request):
             'description': 'Creates a new comment for a post with data sent in the post request'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/update/<int:pk>/',
+            'Endpoint': '/posts/<str:pk>/comments/update/<str:comment_pk>/',
             'method': 'PUT',
             'body': {
                 'body': "string",
@@ -92,31 +92,31 @@ def routes(request):
             'description': 'Updates a comment for a post with data sent in the post request'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/delete/<int:pk>/',
+            'Endpoint': '/posts/<str:pk>/comments/delete/<str:comment_pk>/',
             'method': 'DELETE',
             'body': None,
             'description': 'Deletes a comment for a post'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/<int:pk>/like/',
-            'method': 'POST',
+            'Endpoint': '/posts/<str:pk>/comments/<str:comment_pk>/like/',
+            'method': 'GET',
             'body': None,
             'description': 'Increments the like count of a comment by 1'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/<int:pk>/unlike/',
-            'method': 'POST',
+            'Endpoint': '/posts/<str:pk>/comments/<str:comment_pk>/unlike/',
+            'method': 'GET',
             'body': None,
             'description': 'Decrements the like count of a comment by 1'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/<int:pk>/replies/',
+            'Endpoint': '/posts/<str:pk>/comments/<str:comment_pk>/replies/',
             'method': 'GET',
             'body': None,
             'description': 'Returns an array of replies for a comment'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/<int:pk>/replies/create/',
+            'Endpoint': '/posts/<str:pk>/comments/<str:comment_pk>/replies/create/',
             'method': 'POST',
             'body': {
                 'body': "string",
@@ -125,7 +125,7 @@ def routes(request):
             'description': 'Creates a new reply for a comment with data sent in the post request'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/<int:pk>/replies/update/<int:reply_pk>/',
+            'Endpoint': '/posts/<str:pk>/comments/<str:comment_pk>/replies/update/<int:reply_pk>/',
             'method': 'PUT',
             'body': {
                 'body': "string",
@@ -134,20 +134,20 @@ def routes(request):
             'description': 'Updates a reply for a comment with data sent in the post request'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/<int:pk>/replies/delete/<int:reply_pk>/',
+            'Endpoint': '/posts/<str:pk>/comments/<str:comment_pk>/replies/delete/<str:reply_pk>/',
             'method': 'DELETE',
             'body': None,
             'description': 'Deletes a reply for a comment'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/<int:pk>/replies/<int:reply_pk>/like/',
-            'method': 'POST',
+            'Endpoint': '/posts/<str:pk>/comments/<str:comment_pk>/replies/<str:reply_pk>/like/',
+            'method': 'GET',
             'body': None,
             'description': 'Increments the like count of a reply by 1'
         },
         {
-            'Endpoint': '/posts/<str:pk>/comments/<int:pk>/replies/<int:reply_pk>/unlike/',
-            'method': 'POST',
+            'Endpoint': '/posts/<str:pk>/comments/<str:comment_pk>/replies/<str:reply_pk>/unlike/',
+            'method': 'GET',
             'body': None,
             'description': 'Decrements the like count of a reply by 1'
         },
@@ -264,7 +264,7 @@ def post_comments(request, pk):
 @api_view(['GET'])
 def comment_detail(request, pk, comment_pk):
     try:
-        comment = get_object_or_404(Comment, _id=comment_pk, post__id=pk)
+        comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         serializer = CommentSerializer(comment, many=False)
         return Response(serializer.data)
     except NotFound:
@@ -294,7 +294,7 @@ def comment_create(request, pk):
 @permission_classes([IsAuthenticated])
 def comment_update(request, pk, comment_pk):
     try:
-        comment = get_object_or_404(Comment, _id=comment_pk, post__id=pk)
+        comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         serializer = CommentSerializer(instance=comment, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -312,7 +312,7 @@ def comment_update(request, pk, comment_pk):
 @permission_classes([IsAuthenticated])
 def comment_delete(request, pk, comment_pk):
     try:
-        comment = get_object_or_404(Comment, _id=comment_pk, post__id=pk)
+        comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         comment.delete()
         return Response({'message': 'Comment deleted'}, status=status.HTTP_204_NO_CONTENT)
     except NotFound:
@@ -325,7 +325,7 @@ def comment_delete(request, pk, comment_pk):
 @permission_classes([IsAuthenticated])
 def comment_like(request, pk, comment_pk):
     try:
-        comment = get_object_or_404(Comment, _id=comment_pk, post__id=pk)
+        comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         comment.likes.add(request.user)
         return Response({'message': 'Comment liked'}, status=status.HTTP_200_OK)
     except NotFound:
@@ -338,7 +338,7 @@ def comment_like(request, pk, comment_pk):
 @permission_classes([IsAuthenticated])
 def comment_unlike(request, pk, comment_pk):
     try:
-        comment = get_object_or_404(Comment, _id=comment_pk, post__id=pk)
+        comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         comment.likes.remove(request.user)
         return Response({'message': 'Comment unliked'}, status=status.HTTP_200_OK)
     except NotFound:
@@ -350,7 +350,7 @@ def comment_unlike(request, pk, comment_pk):
 @api_view(['GET'])
 def comment_replies(request, pk, comment_pk):
     try:
-        comment = get_object_or_404(Comment, _id=comment_pk, post__id=pk)
+        comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         replies = comment.reply_set.all()
         serializer = ReplySerializer(replies, many=True)
         return Response(serializer.data)
@@ -364,7 +364,7 @@ def comment_replies(request, pk, comment_pk):
 def reply_detail(request, pk, comment_pk, reply_pk):
     try:
         reply = get_object_or_404(
-            Reply, _id=reply_pk, comment__post__id=pk, comment__id=comment_pk)
+            Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
         serializer = ReplySerializer(reply, many=False)
         return Response(serializer.data)
     except NotFound:
@@ -377,7 +377,7 @@ def reply_detail(request, pk, comment_pk, reply_pk):
 @permission_classes([IsAuthenticated])
 def reply_create(request, pk, comment_pk):
     try:
-        comment = get_object_or_404(Comment, _id=comment_pk, post__id=pk)
+        comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         serializer = ReplySerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(author=request.user, comment=comment)
@@ -395,7 +395,7 @@ def reply_create(request, pk, comment_pk):
 def reply_update(request, pk, comment_pk, reply_pk):
     try:
         reply = get_object_or_404(
-            Reply, _id=reply_pk, comment__post__id=pk, comment__id=comment_pk)
+            Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
         serializer = ReplySerializer(instance=reply, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -414,7 +414,7 @@ def reply_update(request, pk, comment_pk, reply_pk):
 def reply_delete(request, pk, comment_pk, reply_pk):
     try:
         reply = get_object_or_404(
-            Reply, _id=reply_pk, comment__post__id=pk, comment__id=comment_pk)
+            Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
         reply.delete()
         return Response({'message': 'Reply deleted'}, status=status.HTTP_204_NO_CONTENT)
     except NotFound:
@@ -428,7 +428,7 @@ def reply_delete(request, pk, comment_pk, reply_pk):
 def reply_like(request, pk, comment_pk, reply_pk):
     try:
         reply = get_object_or_404(
-            Reply, _id=reply_pk, comment__post__id=pk, comment__id=comment_pk)
+            Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
         reply.likes.add(request.user)
         return Response({'message': 'Reply liked'}, status=status.HTTP_200_OK)
     except NotFound:
@@ -442,7 +442,7 @@ def reply_like(request, pk, comment_pk, reply_pk):
 def reply_unlike(request, pk, comment_pk, reply_pk):
     try:
         reply = get_object_or_404(
-            Reply, _id=reply_pk, comment__post__id=pk, comment__id=comment_pk)
+            Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
         reply.likes.remove(request.user)
         return Response({'message': 'Reply unliked'}, status=status.HTTP_200_OK)
     except NotFound:
