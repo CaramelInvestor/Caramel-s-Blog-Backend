@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    # Custom app on the site
     'rest_framework',
-    'posts',
-    'authentication',
-    'profiles',
+    'django_extensions',
+
+    # Custom app on the site
+    'posts.apps.PostsConfig',
+    'authentication.apps.AuthenticationConfig',
+    'profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [

@@ -123,7 +123,7 @@ def user_view(request):
     '''This view handles the viewing of a user'''
     try:
         user = request.user
-        return Response({'username': user.username, 'email': user.email}, status=status.HTTP_200_OK)
+        return Response({'id': user.id, 'username': user.username, 'email': user.email}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -136,7 +136,8 @@ def users_view(request):
         users = User.objects.all()
         data = []
         for user in users:
-            data.append({'username': user.username, 'email': user.email})
+            data.append(
+                {'id': user.id, 'username': user.username, 'email': user.email})
         return Response(data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -148,7 +149,7 @@ def user_detail_view(request, pk):
     '''This view handles the viewing of a user'''
     try:
         user = User.objects.get(id=pk)
-        return Response({'username': user.username, 'email': user.email}, status=status.HTTP_200_OK)
+        return Response({'id': user.id, 'username': user.username, 'email': user.email}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
