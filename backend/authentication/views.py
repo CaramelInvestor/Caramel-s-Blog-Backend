@@ -113,6 +113,7 @@ def login_view(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
+    """This view handles the log out of a user"""
     logout(request)
     return Response({'status': 'Logged out'}, status=status.HTTP_200_OK)
 
