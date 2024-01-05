@@ -22,6 +22,8 @@ class Post(models.Model):
         return self.likes.count()
 
     def __str__(self):
+        """This method returns a string representation
+        of the title object"""
         return self.title
 
 
@@ -41,6 +43,8 @@ class Comment(models.Model):
         return self.likes.count()
 
     def __str__(self):
+        """This method returns a string representation
+        of the comment object"""
         return self.content
 
 
@@ -60,4 +64,6 @@ class Reply(models.Model):
         return self.likes.count()
 
     def __str__(self):
+        """This method returns a string representation
+        of the content object"""
         return self.content

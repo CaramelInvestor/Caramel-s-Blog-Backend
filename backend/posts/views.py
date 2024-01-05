@@ -157,6 +157,7 @@ def routes(request):
 
 @api_view(['GET'])
 def post_list(request):
+    """This method to view a list of posts"""
     try:
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
@@ -167,6 +168,7 @@ def post_list(request):
 
 @api_view(['GET'])
 def post_detail(request, pk):
+    """This method to view the details of a post"""
     try:
         post = get_object_or_404(Post, _id=pk)
         serializer = PostSerializer(post, many=False)
@@ -178,6 +180,7 @@ def post_detail(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def post_create(request):
+    """This method is used to create a new post"""
     try:
         serializer = PostSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -191,6 +194,7 @@ def post_create(request):
 
 @api_view(['PUT'])
 def post_update(request, pk):
+    """This method updates an existing post"""
     try:
         post = get_object_or_404(Post, _id=pk)
         serializer = PostSerializer(instance=post, data=request.data)
@@ -209,7 +213,7 @@ def post_update(request, pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def post_delete(request, pk):
-
+    """This method deletes a specified post"""
     try:
         post = get_object_or_404(Post, _id=pk)
         post.delete()
@@ -223,6 +227,7 @@ def post_delete(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def post_like(request, pk):
+    """This method implements liking a  post"""
     try:
         post = get_object_or_404(Post, _id=pk)
         post.likes.add(request.user)
@@ -237,6 +242,7 @@ def post_like(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def post_unlike(request, pk):
+    """This method implements unliking a post"""
     try:
         post = get_object_or_404(Post, _id=pk)
         post.likes.remove(request.user)
@@ -250,9 +256,10 @@ def post_unlike(request, pk):
 
 @api_view(['GET'])
 def post_comments(request, pk):
+    """This method allows users to post comments"""
     try:
         post = get_object_or_404(Post, _id=pk)
-        comments = post.comment_set.all()
+        comments = post.comment_set.all() //is comment_set used to write comments
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
     except NotFound:
@@ -263,6 +270,7 @@ def post_comments(request, pk):
 
 @api_view(['GET'])
 def comment_detail(request, pk, comment_pk):
+    """This method to view the details of a post"""
     try:
         comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         serializer = CommentSerializer(comment, many=False)
@@ -276,6 +284,7 @@ def comment_detail(request, pk, comment_pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def comment_create(request, pk):
+    """This method is used to create comments"""
     try:
         post = get_object_or_404(Post, _id=pk)
         serializer = CommentSerializer(data=request.data)
@@ -293,6 +302,7 @@ def comment_create(request, pk):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def comment_update(request, pk, comment_pk):
+    """This method updates an existing comment"""
     try:
         comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         serializer = CommentSerializer(instance=comment, data=request.data)
@@ -311,6 +321,7 @@ def comment_update(request, pk, comment_pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def comment_delete(request, pk, comment_pk):
+    """This method deletes a comment"""
     try:
         comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         comment.delete()
@@ -324,6 +335,7 @@ def comment_delete(request, pk, comment_pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def comment_like(request, pk, comment_pk):
+    """This method implements liking a comment"""
     try:
         comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         comment.likes.add(request.user)
@@ -337,6 +349,7 @@ def comment_like(request, pk, comment_pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def comment_unlike(request, pk, comment_pk):
+    """This method implements unliking a comment"""
     try:
         comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         comment.likes.remove(request.user)
@@ -349,6 +362,7 @@ def comment_unlike(request, pk, comment_pk):
 
 @api_view(['GET'])
 def comment_replies(request, pk, comment_pk):
+    """This method replies to a comment"""
     try:
         comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         replies = comment.reply_set.all()
@@ -362,6 +376,7 @@ def comment_replies(request, pk, comment_pk):
 
 @api_view(['GET'])
 def reply_detail(request, pk, comment_pk, reply_pk):
+    """This method to view the details of a reply"""
     try:
         reply = get_object_or_404(
             Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
@@ -376,6 +391,7 @@ def reply_detail(request, pk, comment_pk, reply_pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def reply_create(request, pk, comment_pk):
+    """This method creates a reply to a comment"""
     try:
         comment = get_object_or_404(Comment, _id=comment_pk, post=pk)
         serializer = ReplySerializer(data=request.data)
@@ -393,6 +409,7 @@ def reply_create(request, pk, comment_pk):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def reply_update(request, pk, comment_pk, reply_pk):
+    """This method updates the reply to a comment"""
     try:
         reply = get_object_or_404(
             Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
@@ -412,6 +429,7 @@ def reply_update(request, pk, comment_pk, reply_pk):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def reply_delete(request, pk, comment_pk, reply_pk):
+    """This method deletes the reply to a comment"""
     try:
         reply = get_object_or_404(
             Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
@@ -426,6 +444,7 @@ def reply_delete(request, pk, comment_pk, reply_pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def reply_like(request, pk, comment_pk, reply_pk):
+    """This method implements liking a reply"""
     try:
         reply = get_object_or_404(
             Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
@@ -440,6 +459,7 @@ def reply_like(request, pk, comment_pk, reply_pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def reply_unlike(request, pk, comment_pk, reply_pk):
+    """This method implements unliking a reply"""
     try:
         reply = get_object_or_404(
             Reply, _id=reply_pk, comment__post=pk, comment=comment_pk)
