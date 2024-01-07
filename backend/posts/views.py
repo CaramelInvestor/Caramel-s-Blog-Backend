@@ -259,7 +259,7 @@ def post_comments(request, pk):
     """This method allows users to post comments"""
     try:
         post = get_object_or_404(Post, _id=pk)
-        comments = post.comment_set.all() //is comment_set used to write comments
+        comments = post.comment_set.all()
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
     except NotFound:

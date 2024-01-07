@@ -19,6 +19,8 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # The below line is for the oauth2_provider app to work properly with the rest_framework
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('api/', include('posts.urls')),
     path('api/', include('authentication.urls')),
     # path('api/', include('profiles.urls')),
