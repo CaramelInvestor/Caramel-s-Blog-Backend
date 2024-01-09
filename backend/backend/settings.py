@@ -11,14 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
-
-# OAuth2 Provider settings
-OAUTH_CLIENT_ID = config('OAUTH_CLIENT_ID')
-OAUTH_CLIENT_SECRET = config('OAUTH_CLIENT_SECRET')
-OAUTH_REDIRECT_URI = config('OAUTH_REDIRECT_URI')
-OAUTH_TOKEN_ENDPOINT = config('OAUTH_TOKEN_ENDPOINT')
-BASE_URL = config('BASE_URL')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,10 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
     'rest_framework',
     'django_extensions',
-    'oauth2_provider',
 
     # Custom app on the site
     'posts.apps.PostsConfig',
@@ -64,30 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # Custom middleware
-    # 'backend.custom_middlewares.TokenRefreshMiddleware',
 ]
-
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    )
-}
-
-OAUTH2_PROVIDER = {
-    # this is the list of available scopes
-    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'},
-    'ACCESS_TOKEN_EXPIRE_SECONDS': 4000,
-}
-
-LOGIN_URL = '/admin/login/'
-
 
 ROOT_URLCONF = 'backend.urls'
 
