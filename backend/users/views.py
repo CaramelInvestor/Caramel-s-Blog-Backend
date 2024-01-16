@@ -15,7 +15,7 @@ def routes(request):
     '''This view handles the routes'''
     routes = [
         {
-            'Endpoint': '/auth/register',
+            'Endpoint': '/user/register',
             'method': 'POST',
             'body': {
                 'username': '',
@@ -25,7 +25,7 @@ def routes(request):
             }
         },
         {
-            'Endpoint': '/auth/login',
+            'Endpoint': '/user/login',
             'method': 'POST',
             'body': {
                 'username': '',
@@ -33,27 +33,27 @@ def routes(request):
             }
         },
         {
-            'Endpoint': '/auth/logout',
+            'Endpoint': '/user/logout',
             'method': 'POST',
             'body': None
         },
         {
-            'Endpoint': '/auth/user',
+            'Endpoint': '/user',
             'method': 'GET',
             'body': None
         },
         {
-            'Endpoint': '/auth/users',
+            'Endpoint': '/users',
             'method': 'GET',
             'body': None
         },
         {
-            'Endpoint': '/auth/user/<str:pk>',
+            'Endpoint': '/user/<str:pk>',
             'method': 'GET',
             'body': None
         },
         {
-            'Endpoint': '/auth/user/<str:pk>/update',
+            'Endpoint': '/user/<str:pk>/update',
             'method': 'PUT',
             'body': {
                 'username': '',
@@ -61,7 +61,7 @@ def routes(request):
             }
         },
         {
-            'Endpoint': '/auth/user/<str:pk>/delete',
+            'Endpoint': '/user/<str:pk>/delete',
             'method': 'DELETE',
             'body': None
         },

@@ -37,14 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'rest_framework',
     'django_extensions',
 
     # Custom app on the site
-    'posts.apps.PostsConfig',
-    'authentication.apps.AuthenticationConfig',
-    'profiles.apps.ProfilesConfig',
+    'posts',
+    'users',
+    'profiles',
 ]
 
 MIDDLEWARE = [
